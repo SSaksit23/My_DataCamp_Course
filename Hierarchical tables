@@ -1,0 +1,58 @@
+Using alias to handle the same table.
+
+  1. Alias function with .alias method.
+  2. select function with 2 columns 
+  3. match the columns with the id columns on the manager columns and employee columns. 
+  4. Order by manager's columns 
+  5. execute the connection with .fetchall() method.
+  6. Loop over each item in the result and print.
+
+# Make an alias of the employees table: managers
+managers = employees.alias()
+
+# Build a query to select names of managers and their employees: stmt
+stmt = select(
+    [managers.columns.name.label('manager'),
+     employees.columns.name.label('employee')]
+)
+
+# Match managers id with employees mgr: stmt_matched
+stmt_matched = stmt.where(managers.columns.id == employees.columns.mgr)
+
+# Order the statement by the managers name: stmt_ordered
+stmt_ordered = stmt_matched.order_by(managers.columns.name)
+
+# Execute statement: results
+results = connection.execute(stmt_ordered).fetchall()
+
+# Print records
+for record in results:
+    print(record)
+
+
+-----
+
+Leveraging functions and group_bys with hierarchical data.
+
+1. Make an alias table from manager columns. 
+managers = employees.alias()
+
+2. Build a query to select names of managers and counts of their employees: stmt
+stmt = select([managers.columns.name, func.count(employees.columns.id)])
+
+3. Append a where clause that ensures the manager id and employee mgr are equal
+stmt_matched = stmt.where(managers.columns.id == employees.columns.mgr)
+
+4. Group by Managers Name
+stmt_grouped = stmt_matched.group_by(managers.columns.name)
+
+5. Execute statement: results
+results = connection.execute(stmt_grouped).fetchall()
+
+6. print manager
+for record in results:
+    print(record)
+
+
+
+
