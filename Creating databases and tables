@@ -1,0 +1,26 @@
+#import dataType from  sqlalchemy
+from sqlalchemy import (Table, Column, String, Integer, Decimal, Boolean) 
+
+#create table with contain the specific data type in each columns. 
+employees = table('employees', metadata, 
+    Column('id', Integer())
+    Column('name', String(255))
+    Column('salary', Decimal())
+    Column('active', Boolean())
+    
+#use create all method to create the metadata 
+metadata.create_all(engine)
+
+#use table_names() method to create the table. 
+engine.table_names()
+
+#--We still use table object like in reflection.
+#--Replace autoload with the column object.
+#--Create all the table in the database using create_all() method.
+## Addition columns option
+### unique to force all value to be unique.
+### nullable() to make column emptiable in row.
+### default to set one value if one isn't applied.
+
+
+    
