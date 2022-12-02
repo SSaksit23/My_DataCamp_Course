@@ -1,0 +1,45 @@
+------------------------------------------------------\\
+Updating multiple records
+
+## no need to input the columns in the values() in update.values statement 
+------------------------------------------------------\\
+
+# Build a statement to update the notes to 'The Wild West': stmt
+stmt = update(state_fact).values(notes = 'The Wild West')
+
+# Append a where clause to match the West census region records: stmt_west
+stmt_west = stmt.where(state_fact.columns.census_region_name == 'West')
+
+# Execute the statement: results
+results = connection.execute(stmt_west)
+
+# Print rowcount
+print(results.rowcount)
+
+------------------------------------------------------\\
+
+
+Correlated updates
+
+## use select() method to select the correlate columns and combine with update() claus to change the value in the selected area.
+
+------------------------------------------------------\\
+# Build a statement to select name from state_fact: fips_stmt
+fips_stmt = select([state_fact.columns.name]) <----- select the whole subject (data-columns-name of the columns)
+
+# Append a where clause to match the fips_state to flat_census fips_code: fips_stmt
+fips_stmt = fips_stmt.where( <--- select the columns we need to update with the columns we need data from)
+    state_fact.columns.fips_state == flat_census.columns.fips_code)
+    
+# Build an update statement to set the name to fips_stmt_where: update_stmt
+update_stmt = update(flat_census).values(
+    state_name = fips_stmt)  <---- no need to declare whole data,just the columns.
+
+# Execute update_stmt: results
+results = connection.execute(update_stmt)  <---- execute the connection with the data.
+
+# Print rowcount
+print(results.rowcount)
+
+
+------------------------------------------------------\\
